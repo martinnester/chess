@@ -1,0 +1,13 @@
+{
+  "name": "chess",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:martinnester/chess.git",
+  "license": "MIT",
+  "scripts": {
+    "start": "yarn tsc && node ./build/tsc.js"
+  },
+  "devDependencies": {
+    "typescript": "^4.8.2"
+  }
+}
