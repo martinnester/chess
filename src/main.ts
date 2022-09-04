@@ -13,6 +13,12 @@ class Game {
        [null,null,null,null,null,null,null,null],
        [new Pawn("white", this),new Pawn("white", this),new Pawn("white", this),new Pawn("white", this),new Pawn("white", this),new Pawn("white", this),new Pawn("white", this),new Pawn("white", this)],
        [new Rook("white", this),new Knight("white", this),new Bishop("white", this),new Queen("white", this),new King("white", this),new Bishop("white", this),new Knight("white", this),new Rook("white", this)],] 
+    
+        for(let r = 0; r<8; r++){
+            for(let f =0; r<8; f++){
+                this.board[r][f].place = {rank:r, file:r};
+            }
+        }
     }
 }
 
@@ -25,6 +31,7 @@ class Place {
 abstract class Piece {
     game : Game;
     color : Color
+    place : Place
     constructor(color: Color, game: Game) {
         this.color = color
         this.game = game
@@ -42,7 +49,27 @@ class Pawn extends Piece {
 
 class Rook extends Piece {
     canMoveTo(): Place[] {
-        throw new Error("Method not implemented.");
+        let places : Place[] = []
+        const calcMoves = (places:Place[], r:number)=>{
+            if(this.game.board[this.place.rank][this.place.file].color==this.color){
+                return false;
+            }
+            let place = {rank:r, file: this.place.file};
+            places.push(place);
+            if(this.game.board[place.rank][place.file]!=null){
+                return false;
+            }
+            return true;
+        }
+
+        for(let r=this.place.rank+1; r<8; r++){
+            if(calcMoves(places, r)==false) break;
+        }
+        for(let r=this.place.rank-1; r>=0; r--){
+            if(calcMoves(places, r)==false) break;
+        }
+        
+        return places;
     }
 }
 
