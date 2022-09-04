@@ -11,8 +11,8 @@ export class Game {
        this.board = 
        [[new Rook("black", this),new Knight("black", this),new Bishop("black", this),new Queen("black", this),new King("black", this),new Bishop("black", this),new Knight("black", this),new Rook("black", this)],
        [new Pawn("black", this),new Pawn("black", this),new Pawn("black", this),new Pawn("black", this),new Pawn("black", this),new Pawn("black", this),new Pawn("black", this),new Pawn("black", this)],
-       [null,null,null,null,null,null,null,null],
-       [null,null,null,null,null,null,null,null],
+       [new King("white", this),null,null,null,null,null,null,null],
+       [null,null,new Knight("white",this),null,null,new Queen("black",this),null,null],
        [null,null,null,new Bishop("black", this),new Rook("white", this),null,null,null],
        [null,null,null,null,null,null,null,null],
        [new Pawn("white", this),new Pawn("white", this),new Pawn("white", this),new Pawn("white", this),new Pawn("white", this),new Pawn("white", this),new Pawn("white", this),new Pawn("white", this)],
@@ -71,8 +71,6 @@ class Place {
     }
 }
 
-type Next = (place:Place)=> Place;
-
 abstract class Piece {
     game : Game;
     color : Color
@@ -119,26 +117,26 @@ class Pawn extends Piece {
     }
 }
 
-
+const straigts = [{file:1, rank:0},{file:-1, rank:0},{rank:1, file:0},{rank:-1, file:0}];
 class Rook extends Piece {
     strings= { black: "♜", white: "♖" };
     canMoveTo(): Place[] {
-        return this.calcManyMoves([{file:1, rank:0},{file:-1, rank:0},{rank:1, file:0},{rank:-1, file:0}],true);
+        return this.calcManyMoves(straigts,true);
     }
 }
 
 class Knight extends Piece {
     strings= { black: "♞", white: "♘" };
     canMoveTo(): Place[] {
-        throw new Error("Method not implemented.");
+        return this.calcManyMoves([{file:1, rank:2},{file:-1, rank:2},{file:-1, rank:-2},{file:1, rank:-2},   {file:2, rank:1},{file:-2, rank:1},{file:-2, rank:-1},{file:2, rank:-1}],true);;
     }
 
 }
-
+const diagonals = [{file:1, rank:1},{file:-1, rank:1},{file:-1, rank:-1},{file:1, rank:-1}];
 class Bishop extends Piece {
     strings= { black: "♝", white: "♗" };
     canMoveTo(): Place[] {
-        return this.calcManyMoves([{file:1, rank:1},{file:-1, rank:1},{file:-1, rank:-1},{file:1, rank:-1}],true);;
+        return this.calcManyMoves(diagonals,true);;
     }
 
 }
@@ -146,7 +144,7 @@ class Bishop extends Piece {
 class Queen extends Piece {
     strings= { black: "♚", white: "♔" };
     canMoveTo(): Place[] {
-        throw new Error("Method not implemented.");
+        return this.calcManyMoves([...diagonals,...straigts],true);
     }
 
 }
@@ -154,7 +152,7 @@ class Queen extends Piece {
 class King extends Piece {
     strings= { black: "♛", white: "♕" };
     canMoveTo(): Place[] {
-        throw new Error("Method not implemented.");
+        return this.calcManyMoves([...diagonals,...straigts],false);
     }
 
 }
@@ -163,4 +161,7 @@ class King extends Piece {
 let game = new Game();
 game.display({rank:4, file:4});
 game.display({rank:4, file:3});
+game.display({rank:3, file:2});
+game.display({rank:3, file:5});
+game.display({rank:2, file:0});
 // console.log(game.board[4][4].canMoveTo())
