@@ -80,23 +80,18 @@ abstract class Piece {
         this.game = game
     }
     abstract canMoveTo(): Place[];
-    calcMoves(from: Place, increments: Place, repeat: boolean, places: Place[] = [], onlyIfTakes: boolean = false) {
-
+    calcMoves(from: Place, increments: Place, repeat: boolean, places: Place[]) {
         let to = { file: from.file + increments.file, rank: from.rank + increments.rank };
         if (to.file < 0 || to.file > 7 || to.rank < 0 || to.rank > 7) {
-            return places;
+            return;
         }
         let toPiece = this.game.get(to);
         if (toPiece === null) {
-
             if (repeat) this.calcMoves(to, increments, repeat, places);
-            if (onlyIfTakes === false) places.push(to);
-        } else if (toPiece.color === this.color) {
-            //do nothing
+            places.push(to);
         } else if (toPiece.color !== this.color) {
             places.push(to);
         }
-        return places;
     }
     calcManyMoves(incrementsList: Place[], repeat: boolean, places: Place[] = []) {
         for (let increments of incrementsList) {
@@ -114,24 +109,15 @@ abstract class Piece {
 class Pawn extends Piece {
     strings = { black: "♟", white: "♙" };
     canMoveTo(): Place[] {
-        if (this.color = "black") {
-            if (this.place.rank === 1) {
-                return [...this.calcMoves(this.place, { file: 1, rank: 0 }, false), ...this.calcMoves(this.place, { file: 2, rank: 0 }, false), ...this.calcMoves(this.place, { file: 1, rank: 1 }, false, [], true), ...this.calcMoves(this.place, { file: 1, rank: -1 }, false, [], true)]
-            }
-        }
-        else {
-            if (this.place.rank === 6) {
-                return [...this.calcMoves(this.place, { file: -1, rank: 0 }, false), ...this.calcMoves(this.place, { file: -2, rank: 0 }, false), ...this.calcMoves(this.place, { file: -1, rank: 1 }, false, [], true), ...this.calcMoves(this.place, { file: -1, rank: -1 }, false, [], true)]
-            }
-        }
+        throw new Error("Method not implemented.");
     }
 }
 
-const straights = [{ file: 1, rank: 0 }, { file: -1, rank: 0 }, { rank: 1, file: 0 }, { rank: -1, file: 0 }];
+const straigts = [{ file: 1, rank: 0 }, { file: -1, rank: 0 }, { rank: 1, file: 0 }, { rank: -1, file: 0 }];
 class Rook extends Piece {
     strings = { black: "♜", white: "♖" };
     canMoveTo(): Place[] {
-        return this.calcManyMoves(straights, true);
+        return this.calcManyMoves(straigts, true);
     }
 }
 
@@ -154,7 +140,7 @@ class Bishop extends Piece {
 class Queen extends Piece {
     strings = { black: "♚", white: "♔" };
     canMoveTo(): Place[] {
-        return this.calcManyMoves([...diagonals, ...straights], true);
+        return this.calcManyMoves([...diagonals, ...straigts], true);
     }
 
 }
@@ -162,19 +148,16 @@ class Queen extends Piece {
 class King extends Piece {
     strings = { black: "♛", white: "♕" };
     canMoveTo(): Place[] {
-        return this.calcManyMoves([...diagonals, ...straights], false);
+        return this.calcManyMoves([...diagonals, ...straigts], false);
     }
 
 }
 
 
 let game = new Game();
-game.display({ rank: 1, file: 6 });
-game.display({ rank: 6, file: 6 });
-
-// game.display({rank:4, file:4});
-// game.display({rank:4, file:3});
-// game.display({rank:3, file:2});
-// game.display({rank:3, file:5});
-// game.display({rank:2, file:0});
+game.display({ rank: 4, file: 4 });
+game.display({ rank: 4, file: 3 });
+game.display({ rank: 3, file: 2 });
+game.display({ rank: 3, file: 5 });
+game.display({ rank: 2, file: 0 });
 // console.log(game.board[4][4].canMoveTo())
