@@ -250,10 +250,10 @@ class King extends Piece {
             repeat,
             type: "takesOnly",
           }))
-        ).filter((place) => {
+        ).findIndex((place) => {
           const piece = this.game.get(place);
           return predicate(piece) && this.color != piece.color;
-        }).length > 0
+        }) != -1
       );
     };
     return (
