@@ -36,7 +36,7 @@ export class Game {
         null,
         null,
         new Rook("white", this),
-        new Pawn("black", this),
+        null,
         null,
       ],
       [
@@ -59,7 +59,7 @@ export class Game {
         null,
         null,
       ],
-      [null, null, null, null, null, null, null, null],
+      [null, null, null, null, null, null, new Pawn("black", this), null],
       [
         new Pawn("white", this),
         new Pawn("white", this),
@@ -149,11 +149,11 @@ abstract class Piece {
       increments: Place;
       repeat: number;
       count: number;
-      onlyForTake: boolean;
+      type: "takesOnly" | "normal" | "noTakes";
     },
     places: Place[]
   ) {
-    let { from, increments, repeat, count, onlyForTake } = move;
+    let { from, increments, repeat, count, type } = move;
     let to = {
       file: from.file + increments.file,
       rank: from.rank + increments.rank,
@@ -165,9 +165,9 @@ abstract class Piece {
     if (toPiece === null) {
       if (count < repeat)
         this.calcMoves({ ...move, from: to, count: count + 1 }, places);
-      if (!onlyForTake) places.push(to);
+      if (type !== "takesOnly") places.push(to);
     } else if (toPiece.color !== this.color) {
-      places.push(to);
+      if (type !== "noTakes") places.push(to);
     }
   }
   calcManyMoves(
@@ -178,14 +178,18 @@ abstract class Piece {
     for (let increments of incrementsList) {
       // this.calcMoves(this.place, increments, repeat, places)
       this.calcMoves(
-        { from: this.place, increments, repeat, count: 0, onlyForTake: false },
+        { from: this.place, increments, repeat, count: 0, type: "normal" },
         places
       );
     }
     return places;
   }
   calcManyMovesVerbose(
-    moves: { increments: Place; repeat: number; onlyForTake: boolean }[],
+    moves: {
+      increments: Place;
+      repeat: number;
+      type: "takesOnly" | "normal" | "noTakes";
+    }[],
     places: Place[] = []
   ) {
     for (let move of moves) {
@@ -211,17 +215,17 @@ class Pawn extends Piece {
       {
         increments: { file: -1, rank: direction },
         repeat: 0,
-        onlyForTake: true,
+        type: "takesOnly",
       },
       {
         increments: { file: 1, rank: direction },
         repeat: 0,
-        onlyForTake: true,
+        type: "takesOnly",
       },
       {
         increments: { file: 0, rank: direction },
         repeat: onStart ? 1 : 0,
-        onlyForTake: false,
+        type: "noTakes",
       },
     ]);
   }
@@ -291,6 +295,6 @@ game.display({ rank: 4, file: 3 });
 game.display({ rank: 3, file: 2 });
 game.display({ rank: 3, file: 5 });
 game.display({ rank: 2, file: 0 });
-game.display({ rank: 2, file: 6 });
+// game.display({ rank: 2, file: 6 });
 game.display({ rank: 6, file: 6 });
 // console.log(game.board[4][4].canMoveTo())
