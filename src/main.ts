@@ -41,7 +41,7 @@ export class Game {
   }
   displayPiece(rank: number, file: number): string {
     let dark = myXOR(file % 2 == 0, rank % 2 == 0);
-    const color = dark ? chalk.bgBlue : chalk.bgWhite;
+    const color = dark ? chalk.bgBlueBright : chalk.bgWhite;
     let toPrint = this.board[rank][file];
     if (toPrint != null) {
       return color(toPrint.toString() + " ");
